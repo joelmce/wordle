@@ -1,7 +1,13 @@
 import { validWords } from "./wordList.js";
 
-let wordleSize = 5;
+const GameState = {
+  GAME_END: false,
+  GAME_WAITING_START: false,
+  GAME_INPROGRESS: false,
+};
 const grid = [];
+
+let wordleSize = 5;
 let currentLetter = 0;
 let currentRow = 0;
 let word;
@@ -12,6 +18,8 @@ const wordleContainer = document.getElementById("wordle");
 export class Game {
   constructor() {
     this.generateBoard();
+    GameState.GAME_INPROGRESS = true;
+    GameState.GAME_WAITING_START, (GameState.GAME_END = false);
   }
 
   /**
@@ -86,6 +94,9 @@ export class Game {
 
     encodedSubmittedWord.forEach((value, index) => {
       // console.log("Value: " + value + ". Index: " + index);
+      if (word == submittedWord) {
+        alert("WTF");
+      }
       if (encodedWord[index] == value) {
         grid[currentRow - 1][index].classList.add("found");
       } else if (encodedWord.includes(value)) {
@@ -96,6 +107,12 @@ export class Game {
     });
   }
 
+  endGame() {
+    alert("You done!");
+    GameState.GAME_END = true;
+    GameState.GAME_INPROGRESS = false;
+  }
+
   /**
    * Handles preliminary game logic around letter entry, specifically
    * with validating the input, backspacing, tracking which part of the grid
@@ -104,7 +121,11 @@ export class Game {
    * @param {*} key
    */
   listen(key) {
-    for (currentRow; currentRow <= wordleSize; currentRow) {
+    for (
+      currentRow;
+      currentRow <= wordleSize && GameState.GAME_END != true;
+      currentRow
+    ) {
       for (currentLetter; currentLetter <= wordleSize; currentLetter) {
         if (currentLetter == 5) {
           if (key == "ENTER") {
@@ -127,7 +148,10 @@ export class Game {
           break;
         }
       }
-
+      if (currentRow == 5) {
+        this.endGame();
+        break;
+      }
       break;
     }
   }
