@@ -1,45 +1,18 @@
-import { validWords } from "./wordList.js";
-const wordleContainer = document.getElementById("wordle");
+import { Game } from "./game.js";
 
 const wordleSize = 5;
-const letterBoxes = [];
-let word;
+const grid = [];
+let currentRow = 0;
+let currentLetter = 0;
 
-randomWord();
-
-function randomWord() {
-  const randomNum = Math.floor(Math.random() * validWords.length);
-  word = validWords[randomNum];
-  console.log(word);
-}
-
-for (let i = 0; i < wordleSize; i++) {
-  const row = document.createElement("div");
-  row.className = "row";
-
-  for (let j = 0; j < wordleSize; j++) {
-    const letterBox = document.createElement("div");
-    letterBox.className = "letter";
-    letterBox.id = "box-" + i + "-" + j;
-
-    row.appendChild(letterBox);
-    letterBoxes.push(letterBox);
-  }
-  wordleContainer.appendChild(row);
-}
+const game = new Game();
+game.generateWord();
+let row = game.getRow();
+let letter = game.getLetter();
+let boardSize = game.getBoardSize();
 
 document.addEventListener("keypress", function (e) {
   const key = e.key.toUpperCase();
-  for (const box of letterBoxes) {
-    if (box.textContent === "") {
-      if (word.includes(key)) {
-        box.classList.add("found");
-      } else {
-        box.classList.add("not-found");
-      }
-      box.textContent = key;
 
-      break;
-    }
-  }
+  game.listen(key);
 });

@@ -41,3 +41,7 @@ main {
 .not-found {
   background-color: whitesmoke;
 }
+
+.found-wrong-position {
+  background-color: lightsalmon;
+}
