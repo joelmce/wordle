@@ -75,6 +75,29 @@ export class Game {
   }
 
   /**
+   * Handles the submission check. Loops through users submitted word
+   * and then checks:
+   * a) if the character is in the right spot & letter exists in word
+   * b) if the character is in the wrong spot & letter exists in word
+   * @param {*} submittedWord
+   */
+  submitWord(submittedWord) {
+    let encodedWord = [...word];
+    let encodedSubmittedWord = [...submittedWord];
+
+    encodedSubmittedWord.forEach((value, index) => {
+      // console.log("Value: " + value + ". Index: " + index);
+      if (encodedWord[index] == value) {
+        grid[currentRow - 1][index].classList.add("found");
+      } else if (encodedWord.includes(value)) {
+        grid[currentRow - 1][index].style.backgroundColor = "orange";
+      } else {
+        console.log("Error");
+      }
+    });
+  }
+
+  /**
    * Handles preliminary game logic around letter entry, specifically
    * with validating the input, backspacing, tracking which part of the grid
    * the user is up to.
@@ -88,11 +111,10 @@ export class Game {
           if (key == "ENTER") {
             currentRow++;
             currentLetter = 0;
-            console.log(wordSubmitted);
+            this.submitWord(wordSubmitted);
             this.newWord();
             break;
           } else {
-            console.log("Nope");
             break;
           }
         } else if (key == "BACKSPACE") {
