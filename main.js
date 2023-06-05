@@ -7,11 +7,12 @@ let currentLetter = 0;
 
 const game = new Game();
 game.generateWord();
-let row = game.getRow();
-let letter = game.getLetter();
-let boardSize = game.getBoardSize();
 
-document.addEventListener("keypress", function (e) {
+/**
+ * Keypress event is depreciated, using keydown instead.
+ * See more: https://developer.mozilla.org/en-US/docs/Web/API/Element/keypress_event
+ */
+document.addEventListener("keydown", function (e) {
   const key = e.key.toUpperCase();
 
   game.listen(key);
