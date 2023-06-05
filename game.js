@@ -30,7 +30,7 @@ export class Game {
       // Generate the boxes. Create wordleSize boxes
       for (let j = 0; j < wordleSize; j++) {
         const letterBox = document.createElement("div");
-        letterBox.className = "letter";
+        letterBox.classList.add("letter");
 
         // Purely to assist with identifying block positions from the HTML page
         letterBox.id = "box-" + i + "-" + j;
@@ -40,7 +40,6 @@ export class Game {
       }
       wordleContainer.appendChild(row);
     }
-    console.log(grid);
   }
 
   /**

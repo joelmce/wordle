@@ -1,9 +1,12 @@
+@import url("https://fonts.googleapis.com/css2?family=Alata&family=Amiko:wght@700&display=swap");
+
 * {
   box-sizing: border-box;
 }
 
 body {
   height: 100vh;
+  font-family: "Alata", sans-serif;
 }
 
 main {
@@ -12,6 +15,36 @@ main {
   align-items: center;
   height: 100%;
   width: 100%;
+  flex-direction: column;
+}
+
+section {
+  text-align: center;
+}
+
+section h1 {
+  font-size: 40px;
+  margin: 0;
+  font-family: "Amiko", sans-serif;
+}
+
+section button {
+  margin: 10px 0 30px 0;
+  height: 40px;
+  width: 100px;
+  font-size: 15px;
+  background-color: transparent;
+  border: 2px #2274a5 solid;
+  color: #2274a5;
+  border-radius: 5px;
+  transition: all 0.3s ease-in;
+}
+
+section button:hover {
+  cursor: pointer;
+  border-color: none;
+  background-color: #2274a5;
+  color: white;
 }
 
 .wordle {
@@ -41,4 +74,12 @@ main {
 
 .found-wrong-position {
   background-color: lightsalmon;
+}
+
+.enabled {
+  background-color: whitesmoke;
+}
+
+.disabled {
+  background-color: lightgray;
 }
