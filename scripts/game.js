@@ -1,10 +1,5 @@
 import { validWords } from "./wordList.js";
-
-const GameState = {
-  GAME_END: false,
-  GAME_WAITING_START: false,
-  GAME_INPROGRESS: false,
-};
+import { GameState } from "./handleGameState.js";
 const grid = [];
 
 let wordleSize = 5;
@@ -12,14 +7,14 @@ let currentLetter = 0;
 let currentRow = 0;
 let word;
 let wordSubmitted = "";
+let gameState;
 
 const wordleContainer = document.getElementById("wordle");
 
 export class Game {
   constructor() {
     this.generateBoard();
-    GameState.GAME_INPROGRESS = true;
-    GameState.GAME_WAITING_START, (GameState.GAME_END = false);
+    gameState = GameState.GAME_INPROGRESS;
   }
 
   /**
@@ -81,6 +76,10 @@ export class Game {
     wordSubmitted = "";
   }
 
+  getState() {
+    return gameState;
+  }
+
   /**
    * Handles the submission check. Loops through users submitted word
    * and then checks:
@@ -95,7 +94,7 @@ export class Game {
     encodedSubmittedWord.forEach((value, index) => {
       // console.log("Value: " + value + ". Index: " + index);
       if (word == submittedWord) {
-        alert("WTF");
+        this.endGame(currentRow);
       }
       if (encodedWord[index] == value) {
         grid[currentRow - 1][index].classList.add("found");
@@ -107,10 +106,9 @@ export class Game {
     });
   }
 
-  endGame() {
-    alert("You done!");
-    GameState.GAME_END = true;
-    GameState.GAME_INPROGRESS = false;
+  endGame(turns) {
+    console.log("You won in " + turns + " guesses!");
+    gameState = GameState.GAME_END;
   }
 
   /**
@@ -123,7 +121,7 @@ export class Game {
   listen(key) {
     for (
       currentRow;
-      currentRow <= wordleSize && GameState.GAME_END != true;
+      currentRow <= wordleSize && gameState != GameState.GAME_END;
       currentRow
     ) {
       for (currentLetter; currentLetter <= wordleSize; currentLetter) {
@@ -133,6 +131,7 @@ export class Game {
             currentLetter = 0;
             this.submitWord(wordSubmitted);
             this.newWord();
+            console.log(gameState);
             break;
           } else {
             break;
@@ -149,7 +148,7 @@ export class Game {
         }
       }
       if (currentRow == 5) {
-        this.endGame();
+        this.endGame(5);
         break;
       }
       break;

@@ -16,8 +16,25 @@
         <button class="btn" id="changeType">Gametype</button>
       </section>
       <div class="wordle" id="wordle"></div>
+
+      <div class="modal" data-modal="choose">
+        <header>
+          <h2>Game options</h2>
+        </header>
+        <section>
+          <ul class="game-options">
+            <li class="option">Standard</li>
+            <li class="option">Pokemon</li>
+          </ul>
+          <h2>Grid Size</h2>
+          <input type="number" id="number" min="5" size="1" />
+        </section>
+        <footer>
+          <button class="modal-button">Start</button>
+        </footer>
+      </div>
     </main>
 
-    <script type="module" src="main.js"></script>
+    <script type="module" src="scripts/main.js"></script>
   </body>
 </html>

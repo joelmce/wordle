@@ -83,3 +83,56 @@ section button:hover {
 .disabled {
   background-color: lightgray;
 }
+
+/**
+* MODALS
+*/
+
+div.modal {
+  z-index: 1;
+  background-color: whitesmoke;
+  border-radius: 10px;
+  height: 300px;
+  width: 300px;
+  position: absolute;
+  text-align: center;
+  padding: 10px;
+  border: 4px #000 solid;
+  visibility: hidden;
+}
+
+section .game-options {
+  list-style-type: none;
+  padding: 0;
+  display: flex;
+}
+
+.game-options .option {
+  border: 1px #2274a5 solid;
+  width: 100px;
+  padding: 5px;
+  margin: 0 auto;
+  border-radius: 5px;
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+
+.game-options .option:hover {
+  border: none;
+  background-color: #2274a5;
+  color: white;
+}
+
+.modal-button {
+  background-color: green;
+  margin-top: 20px;
+  padding: 10px;
+  border-radius: 5px;
+  border: 0;
+  color: white;
+  float: right;
+}
+
+.blur {
+  filter: blur(3);
+}

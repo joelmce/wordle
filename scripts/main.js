@@ -1,4 +1,6 @@
 import { Game } from "./game.js";
+import { Modal } from "./modal.js";
+const gameType = document.getElementById("changeType");
 
 const wordleSize = 5;
 const grid = [];
@@ -18,4 +20,9 @@ document.addEventListener("keydown", function (e) {
   const key = e.key.toUpperCase();
 
   game.listen(key);
+});
+
+gameType.addEventListener("click", function () {
+  const modal = Modal(gameType.id);
+  modal.open();
 });
