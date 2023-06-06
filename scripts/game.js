@@ -1,7 +1,6 @@
 import { validWords } from "./wordList.js";
 
 const grid = [];
-const bannedKeys = ["CONTROL", "SHIFT", "ESCAPE", "TAB"];
 
 let wordleSize = 5;
 let currentPosition = 0;
@@ -56,54 +55,40 @@ export class Game {
   }
 
   /**
-   * This sets the word of the block they are on as the letter they inputted.
-   * "" is used for backspacing.
-   * Future improvement: Case for more keys to prevent modifer keys & numbers from being pressed and printed
-   * @param {*} key Any key (including modifer keys)
-   */
-  setLetter(key) {
-    switch (key) {
-      case "":
-        grid[currentRow][currentPosition].textContent = "";
-      default:
-        grid[currentRow][currentPosition].textContent = key;
-    }
-  }
-
-  // Clean the variable, prepare for new submission
-  newWord() {
-    wordSubmitted = "";
-  }
-
-  /**
    * Handles the submission check. Loops through users submitted word
    * and then checks:
    * a) if the character is in the right spot & letter exists in word
    * b) if the character is in the wrong spot & letter exists in word
    * @param {*} submittedWord
    */
-  validateWord(submittedWord) {
-    console.log(submittedWord);
+  validate(submittedWord) {
     let encodedWord = [...word];
     let encodedSubmittedWord = [...submittedWord];
+    console.log("Validating");
 
-    if (!validWords.includes(submittedWord))
-      throw new Error("Word doesn't exist");
+    if (!validWords.includes(submittedWord)) " ";
 
-    this.newWord();
+    encodedSubmittedWord.forEach((c, i) => {
+      if (word == submittedWord) this.endGame(true, currentRow);
 
-    encodedSubmittedWord.forEach((value, index) => {
-      if (word == submittedWord) this.endGame(currentRow);
-      if (encodedWord[index] == value) {
-        grid[currentRow][index].classList.add("found");
-      } else if (encodedWord.includes(value)) {
-        grid[currentRow][index].style.backgroundColor = "orange";
+      console.log(c);
+      console.log(encodedWord.includes(c));
+      if (encodedWord[i] == c) {
+        grid[currentRow][i].classList.add("found");
+      } else if (encodedWord.includes(c)) {
+        grid[currentRow][i].style.backgroundColor = "orange";
       }
     });
+
+    submittedWord = "";
   }
 
-  endGame(turns) {
+  endGame(wl, turns) {
     console.log("You won in " + turns + " guesses!");
+  }
+
+  isLast(pos) {
+    return pos == wordleSize ? true : false;
   }
 
   /**
@@ -112,50 +97,23 @@ export class Game {
    * @param {*} key
    */
   listen(key) {
-    /* Only allow whitelisted keys */
-    if (!bannedKeys.includes(key)) {
-      /**
-       * If the user presses enter AND the row has been completed (5th letter)
-       */
-      if (key == "ENTER" && currentPosition == 5) {
-        console.log(
-          "Current Row: " +
-            currentRow +
-            ". Current Position: " +
-            currentPosition +
-            ". Key pressed: " +
-            key
-        );
-        /* Submit the word the user typed out */
-        this.validateWord(wordSubmitted);
-        currentRow++;
-        currentPosition = 0;
-      } else {
-        /**
-         * We assume that the user is entering a non-modifier key, so
-         * we first set the positions letter as the key entered.
-         * TODO: Maybe some more validations? i.e disallow modifiers
-         */
-        this.setLetter(key);
-
-        /* Append key to the submitted word */
-        wordSubmitted += key;
-
-        /* Increment the position */
-        currentPosition++;
+    if (currentRow > -1 && currentRow <= 5) {
+      if (currentPosition > -1 && currentPosition <= 5) {
+        if (key === "ENTER") {
+          if (this.isLast(currentPosition)) {
+            this.validate(wordSubmitted);
+            currentRow++;
+            currentPosition = 0;
+          }
+        } else if (key === "BACKSPACE") {
+          grid[currentRow][currentPosition - 1].textContent = "";
+          currentPosition--;
+        } else {
+          grid[currentRow][currentPosition].textContent = key;
+          wordSubmitted += key;
+          currentPosition++;
+        }
       }
-
-      /**
-       * If the user presses backspace WHILST the position is within the grid boundaries, then go back
-       */
-      if (key == "BACKSPACE" && currentPosition > 0 && currentPosition <= 5) {
-        /* Set the letter and this position nothing */
-        this.setLetter("");
-        currentPosition--;
-      }
-
-      /* End the game is user has exhausted every row */
-      if (currentRow == 4) this.endGame(5);
     }
   }
 }
