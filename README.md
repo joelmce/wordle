@@ -62,4 +62,4 @@ encodedSubmittedWord.forEach((value, index) => {
 
 ### Optimisations
 
-There is no doubt that this is currently a result of many tests, iterations and revisions, but the one that I have yet to focus on is how to make the code more efficient and clean. I will be doing time (not space) complexities soon.
+There is no doubt that this is currently a result of many tests, iterations and revisions, but the one that I have yet to focus on is how to make the code more efficient and clean.

@@ -9,6 +9,7 @@ let currentLetter = 0;
 
 const game = new Game();
 game.generateWord();
+game.startGame();
 
 console.log("Version: 1.1.0");
 

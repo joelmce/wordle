@@ -14,7 +14,6 @@ const wordleContainer = document.getElementById("wordle");
 export class Game {
   constructor() {
     this.generateBoard();
-    gameState = GameState.GAME_INPROGRESS;
   }
 
   /**
@@ -76,10 +75,6 @@ export class Game {
     wordSubmitted = "";
   }
 
-  getState() {
-    return gameState;
-  }
-
   /**
    * Handles the submission check. Loops through users submitted word
    * and then checks:
@@ -91,17 +86,17 @@ export class Game {
     let encodedWord = [...word];
     let encodedSubmittedWord = [...submittedWord];
 
+    this.newWord();
+    currentRow++;
+    currentLetter = 0;
+
     encodedSubmittedWord.forEach((value, index) => {
       // console.log("Value: " + value + ". Index: " + index);
-      if (word == submittedWord) {
-        this.endGame(currentRow);
-      }
+      if (word == submittedWord) this.endGame(currentRow);
       if (encodedWord[index] == value) {
         grid[currentRow - 1][index].classList.add("found");
       } else if (encodedWord.includes(value)) {
         grid[currentRow - 1][index].style.backgroundColor = "orange";
-      } else {
-        console.log("Error");
       }
     });
   }
@@ -109,6 +104,10 @@ export class Game {
   endGame(turns) {
     console.log("You won in " + turns + " guesses!");
     gameState = GameState.GAME_END;
+  }
+
+  startGame() {
+    gameState = GameState.GAME_INPROGRESS;
   }
 
   /**
@@ -119,38 +118,24 @@ export class Game {
    * @param {*} key
    */
   listen(key) {
-    for (
-      currentRow;
-      currentRow <= wordleSize && gameState != GameState.GAME_END;
-      currentRow
-    ) {
+    for (currentRow; currentRow <= wordleSize; currentRow) {
       for (currentLetter; currentLetter <= wordleSize; currentLetter) {
         if (currentLetter == 5) {
           if (key == "ENTER") {
-            currentRow++;
-            currentLetter = 0;
             this.submitWord(wordSubmitted);
-            this.newWord();
-            console.log(gameState);
-            break;
-          } else {
             break;
           }
         } else if (key == "BACKSPACE") {
           currentLetter--;
           this.setWord("");
-          break;
         } else {
           this.setWord(key);
           wordSubmitted += key;
           currentLetter++;
-          break;
         }
-      }
-      if (currentRow == 5) {
-        this.endGame(5);
         break;
       }
+      if (currentRow == 5) this.endGame(5);
       break;
     }
   }
