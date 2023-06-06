@@ -130,7 +130,14 @@ section .game-options {
   border-radius: 5px;
   border: 0;
   color: white;
-  float: right;
+  transition: all 0.3s;
+}
+
+.modal-button:hover {
+  cursor: pointer;
+  background-color: transparent;
+  border: 2px green solid;
+  color: green;
 }
 
 .blur {
