@@ -8,7 +8,8 @@ let currentRow = 0;
 let word;
 let wordSubmitted = "";
 let gameState;
-const endModal = new Modal("");
+// const endModalId = document.getElementById();
+// const endModal = new Modal("");
 
 const wordleContainer = document.getElementById("wordle");
 
