@@ -10,6 +10,7 @@ let wordSubmitted = "";
 let modifierKeys = ["BACKSPACE", "ENTER"];
 
 const wordleContainer = document.getElementById("wordle");
+// const alert = document.getElementById("alert");
 
 export class Game {
   constructor() {
@@ -55,6 +56,12 @@ export class Game {
     console.log(word);
   }
 
+  handleBadWord() {
+    grid[currentRow].forEach((element) => {
+      element.style.animation = "shake .5s";
+    });
+  }
+
   /**
    * Handles the submission check. Loops through users submitted word
    * and then checks:
@@ -67,8 +74,7 @@ export class Game {
     let encodedSubmittedWord = [...submittedWord];
 
     if (!validWords.includes(submittedWord)) {
-      console.log(submittedWord);
-      console.log("Not a word");
+      this.handleBadWord();
     } else {
       encodedSubmittedWord.forEach((c, i) => {
         if (word == submittedWord) this.endGame(currentRow);

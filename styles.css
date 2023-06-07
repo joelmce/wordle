@@ -130,7 +130,6 @@ section .game-options {
   border-radius: 5px;
   border: 0;
   color: white;
-  transition: all 0.3s;
 }
 
 .modal-button:hover {
@@ -142,4 +141,34 @@ section .game-options {
 
 .blur {
   filter: blur(3);
+}
+
+.alert-container {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+@keyframes shake {
+  10%,
+  90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%,
+  80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%,
+  50%,
+  70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%,
+  60% {
+    transform: translate3d(4px, 0, 0);
+  }
 }
