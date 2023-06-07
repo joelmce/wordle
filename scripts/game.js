@@ -3,10 +3,11 @@ import { validWords } from "./wordList.js";
 const grid = [];
 
 let wordleSize = 5;
-let currentPosition = 0;
+let currentPos = 0;
 let currentRow = 0;
 let word;
 let wordSubmitted = "";
+let modifierKeys = ["BACKSPACE", "ENTER"];
 
 const wordleContainer = document.getElementById("wordle");
 
@@ -64,58 +65,55 @@ export class Game {
   validate(submittedWord) {
     let encodedWord = [...word];
     let encodedSubmittedWord = [...submittedWord];
-    console.log("Validating");
 
-    if (!validWords.includes(submittedWord)) console.log("Not a word");
+    if (!validWords.includes(submittedWord)) {
+      console.log(submittedWord);
+      console.log("Not a word");
+    } else {
+      encodedSubmittedWord.forEach((c, i) => {
+        if (word == submittedWord) this.endGame(currentRow);
 
-    encodedSubmittedWord.forEach((c, i) => {
-      if (word == submittedWord) this.endGame(true, currentRow);
+        if (encodedWord[i] == c) {
+          grid[currentRow][i].classList.add("found");
+        } else if (encodedWord.includes(c)) {
+          grid[currentRow][i].style.backgroundColor = "orange";
+        }
+      });
 
-      console.log(c);
-      console.log(encodedWord.includes(c));
-      if (encodedWord[i] == c) {
-        grid[currentRow][i].classList.add("found");
-      } else if (encodedWord.includes(c)) {
-        grid[currentRow][i].style.backgroundColor = "orange";
-      }
-    });
+      wordSubmitted = "";
+      this.step();
+    }
   }
 
-  endGame(wl, turns) {
+  endGame(turns) {
     console.log("You won in " + turns + " guesses!");
   }
 
-  isLast(pos) {
-    return pos == wordleSize ? true : false;
+  step() {
+    if (currentPos === 5) {
+      currentPos = 0;
+      currentRow++;
+    } else {
+      currentPos++;
+    }
   }
 
-  /**
-   * Everytime a user presses a key, we want to handle it
-   *
-   * @param {*} key
-   */
+  back() {
+    wordSubmitted = wordSubmitted.slice(0, -1);
+    grid[currentRow][currentPos - 1].textContent = "";
+    currentPos--;
+  }
+
   listen(key) {
-    if (currentRow > -1 && currentRow <= 5) {
-      if (currentPosition > -1 && currentPosition <= 5) {
-        if (key === "ENTER") {
-          if (this.isLast(currentPosition)) {
-            this.validate(wordSubmitted);
-            currentPosition = 0;
-            currentRow++;
-            wordSubmitted = "";
-          }
-        } else if (key === "BACKSPACE") {
-          grid[currentRow][currentPosition - 1].textContent = "";
-          currentPosition--;
-        } else {
-          if (currentPosition > 4) {
-            console.log("Out of bounds");
-          } else {
-            grid[currentRow][currentPosition].textContent = key;
-            wordSubmitted += key;
-            currentPosition++;
-          }
-        }
+    if (key == "BACKSPACE" && currentPos > 0) this.back();
+
+    if (key == "ENTER" && currentPos == 5) this.validate(wordSubmitted);
+
+    if (currentPos != 5) {
+      if (!modifierKeys.includes(key)) {
+        grid[currentRow][currentPos].textContent = key;
+        wordSubmitted += key;
+        this.step();
       }
     }
   }
