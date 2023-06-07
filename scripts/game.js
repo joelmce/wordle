@@ -66,7 +66,7 @@ export class Game {
     let encodedSubmittedWord = [...submittedWord];
     console.log("Validating");
 
-    if (!validWords.includes(submittedWord)) " ";
+    if (!validWords.includes(submittedWord)) console.log("Not a word");
 
     encodedSubmittedWord.forEach((c, i) => {
       if (word == submittedWord) this.endGame(true, currentRow);
@@ -79,8 +79,6 @@ export class Game {
         grid[currentRow][i].style.backgroundColor = "orange";
       }
     });
-
-    submittedWord = "";
   }
 
   endGame(wl, turns) {
@@ -102,16 +100,21 @@ export class Game {
         if (key === "ENTER") {
           if (this.isLast(currentPosition)) {
             this.validate(wordSubmitted);
-            currentRow++;
             currentPosition = 0;
+            currentRow++;
+            wordSubmitted = "";
           }
         } else if (key === "BACKSPACE") {
           grid[currentRow][currentPosition - 1].textContent = "";
           currentPosition--;
         } else {
-          grid[currentRow][currentPosition].textContent = key;
-          wordSubmitted += key;
-          currentPosition++;
+          if (currentPosition > 4) {
+            console.log("Out of bounds");
+          } else {
+            grid[currentRow][currentPosition].textContent = key;
+            wordSubmitted += key;
+            currentPosition++;
+          }
         }
       }
     }
