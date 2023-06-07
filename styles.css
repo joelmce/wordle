@@ -101,26 +101,8 @@ div.modal {
   visibility: hidden;
 }
 
-section .game-options {
-  list-style-type: none;
-  padding: 0;
-  display: flex;
-}
-
-.game-options .option {
-  border: 1px #2274a5 solid;
-  width: 100px;
-  padding: 5px;
-  margin: 0 auto;
-  border-radius: 5px;
-  transition: all 0.3s ease-in;
-  cursor: pointer;
-}
-
-.game-options .option:hover {
-  border: none;
-  background-color: #2274a5;
-  color: white;
+.modal span {
+  display: inline-block;
 }
 
 .modal-button {

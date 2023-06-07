@@ -1,6 +1,10 @@
 import { validWords } from "./wordList.js";
 
 const grid = [];
+const wl = {
+  win: "Win",
+  loss: "Loss",
+};
 
 let wordleSize = 5;
 let currentPos = 0;
@@ -10,11 +14,22 @@ let wordSubmitted = "";
 let modifierKeys = ["BACKSPACE", "ENTER"];
 
 const wordleContainer = document.getElementById("wordle");
+const endGameModal = document.getElementById("complete");
+const resultTitle = document.getElementById("result");
+const amountOfTurns = document.getElementById("turns");
+
 // const alert = document.getElementById("alert");
 
 export class Game {
   constructor() {
+    this.clean();
     this.generateBoard();
+  }
+
+  clean() {
+    currentPos = 0;
+    currentRow = 0;
+    endGameModal.style.visibility = "hidden";
   }
 
   /**
@@ -77,7 +92,7 @@ export class Game {
       this.handleBadWord();
     } else {
       encodedSubmittedWord.forEach((c, i) => {
-        if (word == submittedWord) this.endGame(currentRow);
+        if (word == submittedWord) this.endGame(wl.win, currentRow);
 
         if (encodedWord[i] == c) {
           grid[currentRow][i].classList.add("found");
@@ -91,8 +106,14 @@ export class Game {
     }
   }
 
-  endGame(turns) {
-    console.log("You won in " + turns + " guesses!");
+  endGame(result, turns) {
+    resultTitle.textContent = `You have ${
+      result === "Win" ? "won! " : "lost. "
+    }`;
+    amountOfTurns.textContent = `${
+      turns == 0 ? turns + 1 + " turn" : turns + 1 + " turns"
+    }`;
+    endGameModal.style.visibility = "visible";
   }
 
   step() {
@@ -114,6 +135,8 @@ export class Game {
     if (key == "BACKSPACE" && currentPos > 0) this.back();
 
     if (key == "ENTER" && currentPos == 5) this.validate(wordSubmitted);
+
+    if (currentRow == 5) this.endGame(wl.loss, currentRow);
 
     if (currentPos != 5) {
       if (!modifierKeys.includes(key)) {
