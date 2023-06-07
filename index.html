@@ -17,9 +17,14 @@
       </section>
       <div class="wordle" id="wordle"></div>
 
-      <div class="modal" data-modal="complete">
+      <!-- <div class="alert-container">
+        <span class="alert" id="alert">Word doesn't exist</span>
+      </div> -->
+
+      <div class="modal" id="complete">
         <header>
           <h2 id="result"></h2>
+          <p>It took you <span id="turns"></span></p>
         </header>
         <footer>
           <button class="modal-button" id="play-again">Play Again</button>
