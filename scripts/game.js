@@ -1,4 +1,4 @@
-import { validWords } from "./wordList.js";
+import { validWords, words } from "./wordList.js";
 
 const grid = [];
 const wl = {
@@ -64,8 +64,8 @@ export class Game {
    * Generate a random word, then assign it to global variable
    */
   generateWord() {
-    const randomNum = Math.floor(Math.random() * validWords.length);
-    word = validWords[randomNum];
+    const randomNum = Math.floor(Math.random() * words.length);
+    word = words[randomNum];
 
     // Debugging use only
     console.log(word);
