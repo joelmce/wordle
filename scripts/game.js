@@ -23,7 +23,7 @@ const amountOfTurns = document.getElementById("turns");
 export class Game {
   constructor() {
     this.clean();
-    this.generateBoard();
+    this.generateNewBoard();
   }
 
   clean() {
@@ -35,7 +35,7 @@ export class Game {
   /**
    * Generates a new board
    */
-  generateBoard() {
+  generateNewBoard() {
     // Generate the rows
     for (let i = 0; i < wordleSize; i++) {
       const row = document.createElement("div");
@@ -57,6 +57,36 @@ export class Game {
         gameBoard[i][j] = letterBox;
       }
       wordleContainer.appendChild(row);
+    }
+
+    if (localStorage.getItem("gamestate") === null) {
+      this.setCache(0, gameBoard);
+    } else {
+      this.generateCachedBoard();
+    }
+  }
+
+  setCache(row, board) {
+    const json = JSON.stringify({
+      currentRow: row,
+      game: board,
+    });
+    localStorage.setItem("gamestate", json);
+  }
+
+  getCache() {
+    return JSON.parse(localStorage.getItem("gamestate"));
+  }
+
+  generateCachedBoard() {
+    const cachedObj = this.getCache();
+    const cachedRow = cachedObj.currentRow;
+    const cachedBoard = cachedObj.game;
+
+    for (let i = 0; i <= cachedRow; i++) {
+      for (let j = 0; j < wordleSize; j++) {
+        gameBoard[i][j].textContent = cachedBoard[i][j];
+      }
     }
   }
 
@@ -85,6 +115,10 @@ export class Game {
    * @param {*} submittedWord
    */
   validate(submittedWord) {
+    const previousState = this.getCache();
+    const previousBoard = gameBoard;
+    previousState.row = currentRow;
+
     let encodedWord = [...word];
     let encodedSubmittedWord = [...submittedWord];
     if (word == submittedWord) this.endGame(wl.win, currentRow);
@@ -98,9 +132,11 @@ export class Game {
         } else if (encodedWord.includes(char)) {
           gameBoard[currentRow][i].style.backgroundColor = "orange";
         }
+        previousBoard[currentRow][i] = char;
       });
 
       wordSubmitted = "";
+      this.setCache(previousState.row, previousBoard);
       this.nextPosition();
     }
   }
