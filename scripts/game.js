@@ -13,10 +13,19 @@ let word;
 let wordSubmitted = "";
 let modifierKeys = ["BACKSPACE", "ENTER"];
 
+const state = {
+  row: currentRow,
+  board: [],
+  timeLeft: 10,
+};
+
+const cache = JSON.parse(localStorage.getItem("gamestate"));
+
 const wordleContainer = document.getElementById("wordle");
 const endGameModal = document.getElementById("complete");
 const resultTitle = document.getElementById("result");
 const amountOfTurns = document.getElementById("turns");
+const timer = document.getElementById("timer");
 
 // const alert = document.getElementById("alert");
 
@@ -60,32 +69,19 @@ export class Game {
     }
 
     if (localStorage.getItem("gamestate") === null) {
-      this.setCache(0, gameBoard);
+      localStorage.setItem("gamestate", JSON.stringify(state));
     } else {
-      this.generateCachedBoard();
-    }
-  }
+      currentRow = cache.row + 1;
 
-  setCache(row, board) {
-    const json = JSON.stringify({
-      currentRow: row,
-      game: board,
-    });
-    localStorage.setItem("gamestate", json);
-  }
+      localStorage.setItem("gamestate", JSON.stringify(cache));
+      console.log("Loading Cached State");
 
-  getCache() {
-    return JSON.parse(localStorage.getItem("gamestate"));
-  }
+      for (let [index, word] of cache.board.entries()) {
+        let encodedWord = [...word];
 
-  generateCachedBoard() {
-    const cachedObj = this.getCache();
-    const cachedRow = cachedObj.currentRow;
-    const cachedBoard = cachedObj.game;
-
-    for (let i = 0; i <= cachedRow; i++) {
-      for (let j = 0; j < wordleSize; j++) {
-        gameBoard[i][j].textContent = cachedBoard[i][j];
+        encodedWord.forEach((c, i) => {
+          gameBoard[index][i].textContent = c;
+        });
       }
     }
   }
@@ -107,6 +103,10 @@ export class Game {
     });
   }
 
+  updateCache() {
+    localStorage.setItem("gamestate", JSON.stringify(cache));
+  }
+
   /**
    * Handles the submission check. Loops through users submitted word
    * and then checks:
@@ -115,10 +115,6 @@ export class Game {
    * @param {*} submittedWord
    */
   validate(submittedWord) {
-    const previousState = this.getCache();
-    const previousBoard = gameBoard;
-    previousState.row = currentRow;
-
     let encodedWord = [...word];
     let encodedSubmittedWord = [...submittedWord];
     if (word == submittedWord) this.endGame(wl.win, currentRow);
@@ -132,11 +128,12 @@ export class Game {
         } else if (encodedWord.includes(char)) {
           gameBoard[currentRow][i].style.backgroundColor = "orange";
         }
-        previousBoard[currentRow][i] = char;
       });
 
       wordSubmitted = "";
-      this.setCache(previousState.row, previousBoard);
+      cache.board.push(submittedWord);
+      cache.row = currentRow;
+      this.updateCache();
       this.nextPosition();
     }
   }
