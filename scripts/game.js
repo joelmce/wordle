@@ -1,3 +1,4 @@
+import { Session } from "./session.js";
 import { validWords, words } from "./wordList.js";
 
 const gameBoard = [];
@@ -10,16 +11,9 @@ let wordleSize = 5;
 let currentPos = 0;
 let currentRow = 0;
 let word;
+let session;
 let wordSubmitted = "";
 let modifierKeys = ["BACKSPACE", "ENTER"];
-
-const state = {
-  row: currentRow,
-  board: [],
-  timeLeft: 10,
-};
-
-const cache = JSON.parse(localStorage.getItem("gamestate"));
 
 const wordleContainer = document.getElementById("wordle");
 const endGameModal = document.getElementById("complete");
@@ -33,6 +27,9 @@ export class Game {
   constructor() {
     this.clean();
     this.generateNewBoard();
+    this.generateWord();
+
+    session = new Session(word, currentRow, 10, gameBoard);
   }
 
   clean() {
@@ -67,23 +64,6 @@ export class Game {
       }
       wordleContainer.appendChild(row);
     }
-
-    if (localStorage.getItem("gamestate") === null) {
-      localStorage.setItem("gamestate", JSON.stringify(state));
-    } else {
-      currentRow = cache.row + 1;
-
-      localStorage.setItem("gamestate", JSON.stringify(cache));
-      console.log("Loading Cached State");
-
-      for (let [index, word] of cache.board.entries()) {
-        let encodedWord = [...word];
-
-        encodedWord.forEach((c, i) => {
-          gameBoard[index][i].textContent = c;
-        });
-      }
-    }
   }
 
   /**
@@ -92,7 +72,6 @@ export class Game {
   generateWord() {
     const randomNum = Math.floor(Math.random() * words.length);
     word = words[randomNum];
-
     // Debugging use only
     console.log(word);
   }
@@ -101,10 +80,6 @@ export class Game {
     gameBoard[currentRow].forEach((element) => {
       element.style.animation = "shake .5s";
     });
-  }
-
-  updateCache() {
-    localStorage.setItem("gamestate", JSON.stringify(cache));
   }
 
   /**
@@ -130,10 +105,6 @@ export class Game {
         }
       });
 
-      wordSubmitted = "";
-      cache.board.push(submittedWord);
-      cache.row = currentRow;
-      this.updateCache();
       this.nextPosition();
     }
   }

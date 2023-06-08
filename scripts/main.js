@@ -7,7 +7,6 @@ let countActive = false;
 
 wordleContainer.innerHTML = "";
 let game = new Game();
-game.generateWord();
 
 console.log("Version: 1.1.0");
 
@@ -26,5 +25,4 @@ document.addEventListener("keydown", function (e) {
 playAgainBtn.addEventListener("click", function () {
   wordleContainer.innerHTML = "";
   game = new Game();
-  game.generateWord();
 });
