@@ -3,9 +3,6 @@ import { Game } from "./game.js";
 const wordleContainer = document.getElementById("wordle");
 const playAgainBtn = document.getElementById("play-again");
 
-const wordleSize = 5;
-const grid = [];
-
 wordleContainer.innerHTML = "";
 let game = new Game();
 game.generateWord();

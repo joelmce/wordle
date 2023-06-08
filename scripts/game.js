@@ -1,6 +1,6 @@
 import { validWords, words } from "./wordList.js";
 
-const grid = [];
+const gameBoard = [];
 const wl = {
   win: "Win",
   loss: "Loss",
@@ -43,7 +43,7 @@ export class Game {
       row.id = i;
 
       // We create a 2D array that reflects what the page is producing
-      grid[i] = [];
+      gameBoard[i] = [];
 
       // Generate the boxes. Create wordleSize boxes
       for (let j = 0; j < wordleSize; j++) {
@@ -54,7 +54,7 @@ export class Game {
         letterBox.id = "box-" + i + "-" + j;
 
         row.appendChild(letterBox);
-        grid[i][j] = letterBox;
+        gameBoard[i][j] = letterBox;
       }
       wordleContainer.appendChild(row);
     }
@@ -72,7 +72,7 @@ export class Game {
   }
 
   handleBadWord() {
-    grid[currentRow].forEach((element) => {
+    gameBoard[currentRow].forEach((element) => {
       element.style.animation = "shake .5s";
     });
   }
@@ -87,22 +87,21 @@ export class Game {
   validate(submittedWord) {
     let encodedWord = [...word];
     let encodedSubmittedWord = [...submittedWord];
+    if (word == submittedWord) this.endGame(wl.win, currentRow);
 
     if (!validWords.includes(submittedWord)) {
       this.handleBadWord();
     } else {
-      encodedSubmittedWord.forEach((c, i) => {
-        if (word == submittedWord) this.endGame(wl.win, currentRow);
-
-        if (encodedWord[i] == c) {
-          grid[currentRow][i].classList.add("found");
-        } else if (encodedWord.includes(c)) {
-          grid[currentRow][i].style.backgroundColor = "orange";
+      encodedSubmittedWord.forEach((char, i) => {
+        if (encodedWord[i] == char) {
+          gameBoard[currentRow][i].classList.add("found");
+        } else if (encodedWord.includes(char)) {
+          gameBoard[currentRow][i].style.backgroundColor = "orange";
         }
       });
 
       wordSubmitted = "";
-      this.step();
+      this.nextPosition();
     }
   }
 
@@ -116,7 +115,8 @@ export class Game {
     endGameModal.style.visibility = "visible";
   }
 
-  step() {
+  // Maybe seperate functions
+  nextPosition() {
     if (currentPos === 5) {
       currentPos = 0;
       currentRow++;
@@ -127,22 +127,23 @@ export class Game {
 
   back() {
     wordSubmitted = wordSubmitted.slice(0, -1);
-    grid[currentRow][currentPos - 1].textContent = "";
+    gameBoard[currentRow][currentPos - 1].textContent = "";
     currentPos--;
   }
 
   listen(key) {
     if (key == "BACKSPACE" && currentPos > 0) this.back();
 
-    if (key == "ENTER" && currentPos == 5) this.validate(wordSubmitted);
+    if (key == "ENTER" && currentPos == wordleSize)
+      this.validate(wordSubmitted);
 
     if (currentRow == 5) this.endGame(wl.loss, currentRow);
 
     if (currentPos != 5) {
       if (!modifierKeys.includes(key)) {
-        grid[currentRow][currentPos].textContent = key;
+        gameBoard[currentRow][currentPos].textContent = key;
         wordSubmitted += key;
-        this.step();
+        this.nextPosition();
       }
     }
   }
