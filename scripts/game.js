@@ -29,13 +29,28 @@ export class Game {
     this.generateNewBoard();
     this.generateWord();
 
-    session = new Session(word, currentRow, 10, gameBoard);
+    this.loadLocalStorage();
   }
 
   clean() {
     currentPos = 0;
     currentRow = 0;
     endGameModal.style.visibility = "hidden";
+  }
+
+  setLocalStorage() {
+    localStorage.setItem("currentRow", currentRow);
+
+    localStorage.setItem("boardContainer", wordleContainer.innerHTML);
+  }
+
+  loadLocalStorage() {
+    const storedWordleContainer = localStorage.getItem("boardContainer");
+    currentRow = localStorage.getItem("currentRow") || 0;
+    currentPos = 0;
+    if (storedWordleContainer) {
+      wordleContainer.innerHTML = storedWordleContainer;
+    }
   }
 
   /**
@@ -105,6 +120,8 @@ export class Game {
         }
       });
 
+      wordSubmitted = "";
+      this.setLocalStorage();
       this.nextPosition();
     }
   }
