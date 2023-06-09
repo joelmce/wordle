@@ -1,6 +1,12 @@
-import { Session } from "./session.js";
+import {
+  getRowState,
+  getWordState,
+  getWordsListState,
+  saveState,
+  countdown,
+} from "./helpers.js";
 import { validWords, words } from "./wordList.js";
-import { countdown } from "./helpers.js";
+import { setScore, getScore, getTimer, setTimer } from "./score.js";
 
 let gameBoard = [];
 const wl = {
@@ -11,17 +17,17 @@ const wl = {
 let wordleSize = 5;
 let currentPos = 0;
 let currentRow = 0;
-let word;
-let session;
+export let word;
 let wordSubmitted = "";
 let modifierKeys = ["BACKSPACE", "ENTER"];
-let guessedWords = [];
 
 const wordleContainer = document.getElementById("wordle");
 const endGameModal = document.getElementById("complete");
 const resultTitle = document.getElementById("result");
 const amountOfTurns = document.getElementById("turns");
 const timer = document.getElementById("timer");
+const scoreSpan = document.getElementById("score");
+const timeLeft = document.getElementById("timeLeft");
 
 // const alert = document.getElementById("alert");
 
@@ -30,54 +36,35 @@ export class Game {
     this.clean();
     this.generateNewBoard();
     if (localStorage.getItem("word")) {
-      word = this.getWordState();
+      word = getWordState();
     } else {
       this.generateWord();
+    }
+
+    if (getTimer() !== null) {
+      countdown(getTimer());
+    } else {
+      countdown(10);
     }
   }
 
   clean() {
     currentPos = 0;
     currentRow = 0;
+    localStorage.removeItem("word");
+    localStorage.removeItem("guessedWords");
+    localStorage.removeItem("row");
     endGameModal.style.visibility = "hidden";
-  }
-
-  saveState(row, guessedWord) {
-    guessedWords.push(guessedWord);
-    if (!localStorage.getItem("guessedWords")) {
-      localStorage.setItem("guessedWords", JSON.stringify(guessedWords));
-      localStorage.setItem("row", JSON.stringify(row));
-    } else {
-      const tempList = JSON.parse(localStorage.getItem("guessedWords"));
-      tempList.push(guessedWord);
-      localStorage.setItem("guessedWords", JSON.stringify(tempList));
-      localStorage.setItem("row", JSON.stringify(row));
-    }
-    localStorage.setItem("word", word);
-  }
-
-  getWordsState() {
-    const guessedWords = JSON.parse(localStorage.getItem("guessedWords"));
-    return guessedWords;
-  }
-
-  getRowState() {
-    const row = JSON.parse(localStorage.getItem("row"));
-    return row;
-  }
-
-  getWordState() {
-    return localStorage.getItem("word");
   }
 
   /**
    * Generates a new board
    */
   generateNewBoard() {
-    const wordState = this.getWordsState();
-    const rowState = this.getRowState();
+    const wordState = getWordsListState();
+    const rowState = getRowState();
     // Generate the rows
-    for (let i = 0; i < wordleSize; i++) {
+    for (let i = 0; i < 6; i++) {
       const row = document.createElement("div");
       row.className = "row";
       row.id = i;
@@ -150,19 +137,30 @@ export class Game {
         }
       });
 
-      this.saveState(currentRow, wordSubmitted);
+      saveState(currentRow, wordSubmitted);
       wordSubmitted = "";
       this.nextPosition();
     }
   }
 
   endGame(result, turns) {
+    if (result == "Win") {
+      setScore(turns + 100);
+    }
+
+    if (result == "Loss") {
+      setScore(turns - 100);
+    }
     resultTitle.textContent = `You have ${
       result === "Win" ? "won! " : "lost. "
     }`;
     amountOfTurns.textContent = `${
       turns == 0 ? turns + 1 + " turn" : turns + 1 + " turns"
     }`;
+
+    scoreSpan.textContent = getScore().score();
+    setTimer(parseFloat(timer.textContent));
+    timeLeft.textContent = timer.textContent;
     endGameModal.style.visibility = "visible";
   }
 
@@ -188,7 +186,7 @@ export class Game {
     if (key == "ENTER" && currentPos == wordleSize)
       this.validate(wordSubmitted);
 
-    if (currentRow == 5) this.endGame(wl.loss, currentRow);
+    if (currentRow == 6) this.endGame(wl.loss, currentRow);
 
     if (currentPos != 5) {
       if (!modifierKeys.includes(key)) {

@@ -132,6 +132,11 @@ div.modal {
   margin-top: 20px;
 }
 
+.scoreboard span {
+  font-weight: bold;
+  color: #2274a5;
+}
+
 @keyframes shake {
   10%,
   90% {
