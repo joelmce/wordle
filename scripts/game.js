@@ -1,7 +1,7 @@
 import { Session } from "./session.js";
 import { validWords, words } from "./wordList.js";
 
-const gameBoard = [];
+let gameBoard = [];
 const wl = {
   win: "Win",
   loss: "Loss",
