@@ -50,6 +50,7 @@ export class Game {
     currentPos = 0;
     if (storedWordleContainer) {
       wordleContainer.innerHTML = storedWordleContainer;
+      gameBoard = storedWordleContainer;
     }
     
   }
