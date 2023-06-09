@@ -1,5 +1,6 @@
 import { Session } from "./session.js";
 import { validWords, words } from "./wordList.js";
+import { countdown } from "./helpers.js";
 
 let gameBoard = [];
 const wl = {
@@ -14,6 +15,7 @@ let word;
 let session;
 let wordSubmitted = "";
 let modifierKeys = ["BACKSPACE", "ENTER"];
+let guessedWords = [];
 
 const wordleContainer = document.getElementById("wordle");
 const endGameModal = document.getElementById("complete");
@@ -27,9 +29,11 @@ export class Game {
   constructor() {
     this.clean();
     this.generateNewBoard();
-    this.generateWord();
-
-    this.loadLocalStorage();
+    if (localStorage.getItem("word")) {
+      word = this.getWordState();
+    } else {
+      this.generateWord();
+    }
   }
 
   clean() {
@@ -38,27 +42,40 @@ export class Game {
     endGameModal.style.visibility = "hidden";
   }
 
-  setLocalStorage() {
-    localStorage.setItem("currentRow", currentRow);
-
-    localStorage.setItem("boardContainer", wordleContainer.innerHTML);
+  saveState(row, guessedWord) {
+    guessedWords.push(guessedWord);
+    if (!localStorage.getItem("guessedWords")) {
+      localStorage.setItem("guessedWords", JSON.stringify(guessedWords));
+      localStorage.setItem("row", JSON.stringify(row));
+    } else {
+      const tempList = JSON.parse(localStorage.getItem("guessedWords"));
+      tempList.push(guessedWord);
+      localStorage.setItem("guessedWords", JSON.stringify(tempList));
+      localStorage.setItem("row", JSON.stringify(row));
+    }
+    localStorage.setItem("word", word);
   }
 
-  loadLocalStorage() {
-    const storedWordleContainer = localStorage.getItem("boardContainer");
-    currentRow = localStorage.getItem("currentRow") || 0;
-    currentPos = 0;
-    if (storedWordleContainer) {
-      wordleContainer.innerHTML = storedWordleContainer;
-      console.log(storedWordleContainer[0][2])
-    }
-    
+  getWordsState() {
+    const guessedWords = JSON.parse(localStorage.getItem("guessedWords"));
+    return guessedWords;
+  }
+
+  getRowState() {
+    const row = JSON.parse(localStorage.getItem("row"));
+    return row;
+  }
+
+  getWordState() {
+    return localStorage.getItem("word");
   }
 
   /**
    * Generates a new board
    */
   generateNewBoard() {
+    const wordState = this.getWordsState();
+    const rowState = this.getRowState();
     // Generate the rows
     for (let i = 0; i < wordleSize; i++) {
       const row = document.createElement("div");
@@ -80,6 +97,17 @@ export class Game {
         gameBoard[i][j] = letterBox;
       }
       wordleContainer.appendChild(row);
+    }
+
+    if (wordState) {
+      let count = 0;
+      for (let word of wordState) {
+        [...word].forEach((char, i) => {
+          gameBoard[count][i].textContent = char;
+        });
+        count++;
+      }
+      currentRow = rowState + 1;
     }
   }
 
@@ -122,8 +150,8 @@ export class Game {
         }
       });
 
+      this.saveState(currentRow, wordSubmitted);
       wordSubmitted = "";
-      this.setLocalStorage();
       this.nextPosition();
     }
   }
