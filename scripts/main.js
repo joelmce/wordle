@@ -20,6 +20,7 @@ console.log("Version: 1.1.0");
     countActive = true;
     const key = e.key.toUpperCase();
     game.listen(key);
+     console.log("Key entered: " + key);
   });
 
 playAgainBtn.addEventListener("click", function () {
