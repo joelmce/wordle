@@ -53,6 +53,7 @@ export class Game {
     if (storedWordleContainer) {
       wordleContainer.innerHTML = storedWordleContainer;
     }
+    addEvent();
   }
 
   /**
