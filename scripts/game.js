@@ -159,6 +159,8 @@ export class Game {
     }`;
 
     scoreSpan.textContent = getScore().score();
+
+    // new Date() ?
     setTimer(parseFloat(timer.textContent));
     timeLeft.textContent = timer.textContent;
     endGameModal.style.visibility = "visible";

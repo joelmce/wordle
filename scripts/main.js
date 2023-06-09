@@ -2,7 +2,6 @@ import { Game } from "./game.js";
 
 const wordleContainer = document.getElementById("wordle");
 const playAgainBtn = document.getElementById("play-again");
-let countActive = false;
 
 wordleContainer.innerHTML = "";
 let game = new Game();
@@ -14,7 +13,6 @@ console.log("Version: 1.1.0");
  * See more: https://developer.mozilla.org/en-US/docs/Web/API/Element/keypress_event
  */
 document.addEventListener("keydown", function (e) {
-  countActive = true;
   const key = e.key.toUpperCase();
   game.listen(key);
 });
