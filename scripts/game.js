@@ -31,7 +31,6 @@ export class Game {
     this.generateWord();
 
     this.loadLocalStorage();
-    addEvent();
   }
 
   clean() {
