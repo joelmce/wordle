@@ -10,7 +10,6 @@ let game = new Game();
 
 console.log("Version: 1.1.0");
 
-export function addEvent() {
    /**
    * Keypress event is depreciated, using keydown instead.
    * See more: https://developer.mozilla.org/en-US/docs/Web/API/Element/keypress_event
@@ -22,8 +21,7 @@ export function addEvent() {
     const key = e.key.toUpperCase();
     game.listen(key);
   });
- 
-}
+
 playAgainBtn.addEventListener("click", function () {
   wordleContainer.innerHTML = "";
   game = new Game();
