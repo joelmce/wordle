@@ -1,6 +1,5 @@
 import { Session } from "./session.js";
 import { validWords, words } from "./wordList.js";
-import { addEvent } from './main.js'
 
 const gameBoard = [];
 const wl = {
