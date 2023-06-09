@@ -50,11 +50,7 @@ export class Game {
     currentPos = 0;
     if (storedWordleContainer) {
       wordleContainer.innerHTML = storedWordleContainer;
-      for(let i = 0; i < wordleSize; i++) {
-        for(let j = 0; i < wordleSize; j++) {
-          gameBoard[i][j] = storedWordleContainer[i][j]
-        }
-      }
+      console.log(storedWordleContainer[0][2])
     }
     
   }
