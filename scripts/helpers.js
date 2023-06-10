@@ -4,8 +4,6 @@
  *         file.
  */
 
-import { word } from "./game.js";
-
 const timerDiv = document.getElementById("timer");
 
 let guessedWords = [];
@@ -42,7 +40,7 @@ export function countdown(timeRemaining) {
  * @param {String} row
  * @param {String} guessedWord
  */
-export function saveState(row, guessedWord) {
+export function saveState(word, row, guessedWord) {
   // Push their word to a global variable that we can manipulate
   guessedWords.push(guessedWord);
 

@@ -6,7 +6,7 @@ import {
   countdown,
 } from "./helpers.js";
 import { validWords, words } from "./wordList.js";
-import { setScore, getScore, getTimer, setTimer } from "./score.js";
+import { setScore, getScore, getStartTime, setStartTime } from "./score.js";
 
 let gameBoard = [];
 const wl = {
@@ -17,7 +17,6 @@ const wl = {
 let wordleSize = 5;
 let currentPos = 0;
 let currentRow = 0;
-export let word;
 let wordSubmitted = "";
 let modifierKeys = ["BACKSPACE", "ENTER"];
 
@@ -33,19 +32,13 @@ const timeLeft = document.getElementById("timeLeft");
 
 export class Game {
   constructor() {
-    this.clean();
+    this.word = getWordState() || this.generateWord();
+    console.log("Generated word at constructor: ", this.word);
     this.generateNewBoard();
-    if (localStorage.getItem("word")) {
-      word = getWordState();
-    } else {
-      this.generateWord();
-    }
+    const startTime = getStartTime() || 10;
 
-    if (getTimer() !== null) {
-      countdown(getTimer());
-    } else {
-      countdown(10);
-    }
+    countdown(startTime);
+    currentPos = 0;
   }
 
   clean() {
@@ -92,6 +85,7 @@ export class Game {
         [...word].forEach((char, i) => {
           gameBoard[count][i].textContent = char;
         });
+        this.validate(word, count);
         count++;
       }
       currentRow = rowState + 1;
@@ -103,9 +97,9 @@ export class Game {
    */
   generateWord() {
     const randomNum = Math.floor(Math.random() * words.length);
-    word = words[randomNum];
+    return words[randomNum];
     // Debugging use only
-    console.log(word);
+    console.log(this.word);
   }
 
   handleBadWord() {
@@ -121,23 +115,28 @@ export class Game {
    * b) if the character is in the wrong spot & letter exists in word
    * @param {*} submittedWord
    */
-  validate(submittedWord) {
-    let encodedWord = [...word];
-    let encodedSubmittedWord = [...submittedWord];
-    if (word == submittedWord) this.endGame(wl.win, currentRow);
+  validate(submittedWord, turnState) {
+    const tmpWord = this.word;
+    const encodedWord = [...tmpWord];
+    const encodedSubmittedWord = [...submittedWord];
+    if (this.word == submittedWord) this.endGame(wl.win, currentRow);
 
     if (!validWords.includes(submittedWord)) {
       this.handleBadWord();
     } else {
       encodedSubmittedWord.forEach((char, i) => {
         if (encodedWord[i] == char) {
-          gameBoard[currentRow][i].classList.add("found");
+          gameBoard[turnState][i].classList.add("found");
         } else if (encodedWord.includes(char)) {
-          gameBoard[currentRow][i].style.backgroundColor = "orange";
+          console.log(turnState, " ", i);
+          gameBoard[turnState][i].style.backgroundColor = "orange"; // @todo make classlist add
         }
       });
+      if (wordSubmitted != "") {
+        saveState(this.word, turnState, wordSubmitted);
+      }
 
-      saveState(currentRow, wordSubmitted);
+      setStartTime(parseFloat(timer.textContent));
       wordSubmitted = "";
       this.nextPosition();
     }
@@ -161,7 +160,8 @@ export class Game {
     scoreSpan.textContent = getScore().score();
 
     // new Date() ?
-    setTimer(parseFloat(timer.textContent));
+    this.clean();
+
     timeLeft.textContent = timer.textContent;
     endGameModal.style.visibility = "visible";
   }
@@ -186,7 +186,7 @@ export class Game {
     if (key == "BACKSPACE" && currentPos > 0) this.back();
 
     if (key == "ENTER" && currentPos == wordleSize)
-      this.validate(wordSubmitted);
+      this.validate(wordSubmitted, currentRow);
 
     if (currentRow == 6) this.endGame(wl.loss, currentRow);
 

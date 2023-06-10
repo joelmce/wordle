@@ -38,7 +38,7 @@ export function getScore() {
  * Returns the time the user had left before closing / refreshing the window
  * @returns {Date}
  */
-export function getTimer() {
+export function getStartTime() {
   return JSON.parse(localStorage.getItem("timer"));
 }
 
@@ -46,6 +46,6 @@ export function getTimer() {
  * Set the time of the users session
  * @param {Date} time
  */
-export function setTimer(time) {
+export function setStartTime(time) {
   localStorage.setItem("timer", JSON.stringify(time));
 }
