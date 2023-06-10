@@ -1,6 +1,14 @@
+import {
+  getRowState,
+  getWordState,
+  getWordsListState,
+  saveState,
+  countdown,
+} from "./helpers.js";
 import { validWords, words } from "./wordList.js";
+import { setScore, getScore } from "./score.js";
 
-const gameBoard = [];
+let gameBoard = [];
 const wl = {
   win: "Win",
   loss: "Loss",
@@ -9,7 +17,6 @@ const wl = {
 let wordleSize = 5;
 let currentPos = 0;
 let currentRow = 0;
-let word;
 let wordSubmitted = "";
 let modifierKeys = ["BACKSPACE", "ENTER"];
 
@@ -17,27 +24,46 @@ const wordleContainer = document.getElementById("wordle");
 const endGameModal = document.getElementById("complete");
 const resultTitle = document.getElementById("result");
 const amountOfTurns = document.getElementById("turns");
-
-// const alert = document.getElementById("alert");
+const timer = document.getElementById("timer");
+const scoreSpan = document.getElementById("score");
+const timeLeft = document.getElementById("timeLeft");
 
 export class Game {
-  constructor() {
-    this.clean();
-    this.generateBoard();
+  constructor(reset) {
+    if (reset) {
+      this.clean();
+      this.newGame();
+    } else {
+      this.newGame();
+    }
+  }
+
+  newGame() {
+    this.word = getWordState() || this.generateWord();
+    console.log("Generated word at constructor: ", this.word);
+    this.generateNewBoard();
+
+    currentPos = 0;
+    countdown();
   }
 
   clean() {
     currentPos = 0;
     currentRow = 0;
+    localStorage.removeItem("word");
+    localStorage.removeItem("guessedWords");
+    localStorage.removeItem("row");
     endGameModal.style.visibility = "hidden";
   }
 
   /**
    * Generates a new board
    */
-  generateBoard() {
+  generateNewBoard() {
+    const wordState = getWordsListState();
+    const rowState = getRowState();
     // Generate the rows
-    for (let i = 0; i < wordleSize; i++) {
+    for (let i = 0; i < 6; i++) {
       const row = document.createElement("div");
       row.className = "row";
       row.id = i;
@@ -58,6 +84,18 @@ export class Game {
       }
       wordleContainer.appendChild(row);
     }
+
+    if (wordState) {
+      let count = 0;
+      for (let word of wordState) {
+        [...word].forEach((char, i) => {
+          gameBoard[count][i].textContent = char;
+        });
+        this.validate(word, count);
+        count++;
+      }
+      currentRow = rowState + 1;
+    }
   }
 
   /**
@@ -65,10 +103,9 @@ export class Game {
    */
   generateWord() {
     const randomNum = Math.floor(Math.random() * words.length);
-    word = words[randomNum];
-
+    return words[randomNum];
     // Debugging use only
-    console.log(word);
+    console.log(this.word);
   }
 
   handleBadWord() {
@@ -84,34 +121,47 @@ export class Game {
    * b) if the character is in the wrong spot & letter exists in word
    * @param {*} submittedWord
    */
-  validate(submittedWord) {
-    let encodedWord = [...word];
-    let encodedSubmittedWord = [...submittedWord];
-    if (word == submittedWord) this.endGame(wl.win, currentRow);
+  validate(submittedWord, turnState) {
+    const encodedWord = [...this.word];
+    const encodedSubmittedWord = [...submittedWord];
+    if (this.word == submittedWord) this.endGame(wl.win, currentRow);
 
     if (!validWords.includes(submittedWord)) {
       this.handleBadWord();
     } else {
       encodedSubmittedWord.forEach((char, i) => {
         if (encodedWord[i] == char) {
-          gameBoard[currentRow][i].classList.add("found");
+          gameBoard[turnState][i].classList.add("found");
         } else if (encodedWord.includes(char)) {
-          gameBoard[currentRow][i].style.backgroundColor = "orange";
+          gameBoard[turnState][i].style.backgroundColor = "orange"; // @todo make classlist add
         }
       });
-
+      if (wordSubmitted != "") {
+        saveState(this.word, turnState, wordSubmitted);
+      }
       wordSubmitted = "";
       this.nextPosition();
     }
   }
 
   endGame(result, turns) {
+    if (result == "Win") {
+      setScore(turns + 100);
+    }
+
+    if (result == "Loss") {
+      setScore(turns - 100);
+    }
     resultTitle.textContent = `You have ${
       result === "Win" ? "won! " : "lost. "
     }`;
     amountOfTurns.textContent = `${
       turns == 0 ? turns + 1 + " turn" : turns + 1 + " turns"
     }`;
+
+    scoreSpan.textContent = getScore().score();
+
+    timeLeft.textContent = timer.textContent;
     endGameModal.style.visibility = "visible";
   }
 
@@ -135,9 +185,9 @@ export class Game {
     if (key == "BACKSPACE" && currentPos > 0) this.back();
 
     if (key == "ENTER" && currentPos == wordleSize)
-      this.validate(wordSubmitted);
+      this.validate(wordSubmitted, currentRow);
 
-    if (currentRow == 5) this.endGame(wl.loss, currentRow);
+    if (currentRow == 6) this.endGame(wl.loss, currentRow);
 
     if (currentPos != 5) {
       if (!modifierKeys.includes(key)) {

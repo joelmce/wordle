@@ -1,13 +1,11 @@
 import { Game } from "./game.js";
 
 const wordleContainer = document.getElementById("wordle");
-const playAgainBtn = document.getElementById("play-again");
 
 wordleContainer.innerHTML = "";
 let game = new Game();
-game.generateWord();
 
-console.log("Version: 1.1.0");
+console.log("Version: 1.3.0");
 
 /**
  * Keypress event is depreciated, using keydown instead.
@@ -18,8 +16,8 @@ document.addEventListener("keydown", function (e) {
   game.listen(key);
 });
 
+const playAgainBtn = document.getElementById("play-again");
 playAgainBtn.addEventListener("click", function () {
   wordleContainer.innerHTML = "";
-  game = new Game();
-  game.generateWord();
+  game = new Game(true);
 });

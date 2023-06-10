@@ -10,9 +10,9 @@
   <body>
     <main>
       <section class="headings">
+        <p id="timer"></p>
         <h1>Wordle+</h1>
-        <p>It's the Wordle you all know and love, but on steroids.</p>
-        <button class="btn" id="hint">Hint</button>
+        <p>It's the Wordle you all know and love.</p>
         <!--<button class="btn" id="changeType">Gametype</button>-->
       </section>
       <div class="wordle" id="wordle"></div>
@@ -26,6 +26,10 @@
           <h2 id="result"></h2>
           <p>It took you <span id="turns"></span></p>
         </header>
+        <div class="scoreboard">
+          <p>Your total score: <span id="score"></span></p>
+          <p>You had <span id="timeLeft"></span> left on the clock!</p>
+        </div>
         <footer>
           <button class="modal-button" id="play-again">Play Again</button>
         </footer>
