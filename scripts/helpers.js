@@ -15,7 +15,7 @@ export function countdown(isNew) {
   if (isNew) {
     localStorage.removeItem("timer");
   }
-  let cachedSeconds = getStartTime() || 600;
+  let cachedSeconds = 600 || 600;
 
   setInterval(function () {
     cachedSeconds--;

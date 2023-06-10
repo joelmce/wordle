@@ -38,6 +38,9 @@ export class Game {
     }
   }
 
+  /**
+   * New game.
+   */
   newGame() {
     this.word = getWordState() || this.generateWord();
     console.log("Generated word at constructor: ", this.word);
@@ -47,12 +50,18 @@ export class Game {
     countdown();
   }
 
+  /**
+   * Reset the game state
+   */
   clean() {
     currentPos = 0;
     currentRow = 0;
+
     localStorage.removeItem("word");
     localStorage.removeItem("guessedWords");
     localStorage.removeItem("row");
+
+    countdown(true);
     endGameModal.style.visibility = "hidden";
   }
 
@@ -85,12 +94,17 @@ export class Game {
       wordleContainer.appendChild(row);
     }
 
+    // If there is a cached session, then we want to run this
     if (wordState) {
       let count = 0;
+
+      // Iterate through all the words the user has guessed
       for (let word of wordState) {
         [...word].forEach((char, i) => {
           gameBoard[count][i].textContent = char;
         });
+
+        // We will revalidate each of those words
         this.validate(word, count);
         count++;
       }
@@ -108,6 +122,9 @@ export class Game {
     console.log(this.word);
   }
 
+  /**
+   * Animate the row with a small, concise animation
+   */
   handleBadWord() {
     gameBoard[currentRow].forEach((element) => {
       element.style.animation = "shake .5s";
@@ -122,7 +139,7 @@ export class Game {
    * @param {*} submittedWord
    */
   validate(submittedWord, turnState) {
-    const encodedWord = [...this.word];
+    const encodedWord = [...this.word]; // ['P', 'L', 'A', 'N', 'E']
     const encodedSubmittedWord = [...submittedWord];
     if (this.word == submittedWord) this.endGame(wl.win, currentRow);
 
@@ -144,6 +161,11 @@ export class Game {
     }
   }
 
+  /**
+   * End the game
+   * @param {*} result
+   * @param {*} turns
+   */
   endGame(result, turns) {
     if (result == "Win") {
       setScore(turns + 100);
@@ -165,7 +187,9 @@ export class Game {
     endGameModal.style.visibility = "visible";
   }
 
-  // Maybe seperate functions
+  /**
+   * Increment the players position in the grid
+   */
   nextPosition() {
     if (currentPos === 5) {
       currentPos = 0;
@@ -175,12 +199,23 @@ export class Game {
     }
   }
 
+  /**
+   * Go back one spot in the grid, and then make textContent blank
+   */
   back() {
     wordSubmitted = wordSubmitted.slice(0, -1);
     gameBoard[currentRow][currentPos - 1].textContent = "";
     currentPos--;
   }
 
+  /**
+   * Function is called upon every time a user is interacting
+   * with their keyboard
+   *
+   * Handles most of the primary functions such as checking keys
+   * and handling if a player should be winning or going to next row.
+   * @param {*} key
+   */
   listen(key) {
     if (key == "BACKSPACE" && currentPos > 0) this.back();
 
