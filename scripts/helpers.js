@@ -79,3 +79,11 @@ export function getRowState() {
 export function getWordState() {
   return localStorage.getItem("word");
 }
+
+export function setGameStatus(status) {
+  localStorage.setItem("state", status);
+}
+
+export function getGameStatus() {
+  return localStorage.getItem("state");
+}

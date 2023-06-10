@@ -1,7 +1,7 @@
 import { Game } from "./game.js";
+import { setGameStatus } from "./helpers.js";
 
 const wordleContainer = document.getElementById("wordle");
-const playAgainBtn = document.getElementById("play-again");
 
 wordleContainer.innerHTML = "";
 let game = new Game();
@@ -17,7 +17,8 @@ document.addEventListener("keydown", function (e) {
   game.listen(key);
 });
 
+const playAgainBtn = document.getElementById("play-again");
 playAgainBtn.addEventListener("click", function () {
   wordleContainer.innerHTML = "";
-  game = new Game();
+  game = new Game(true);
 });

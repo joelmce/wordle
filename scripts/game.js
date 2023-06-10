@@ -4,6 +4,8 @@ import {
   getWordsListState,
   saveState,
   countdown,
+  setGameStatus,
+  getGameStatus,
 } from "./helpers.js";
 import { validWords, words } from "./wordList.js";
 import { setScore, getScore, getStartTime, setStartTime } from "./score.js";
@@ -29,13 +31,24 @@ const scoreSpan = document.getElementById("score");
 const timeLeft = document.getElementById("timeLeft");
 
 export class Game {
-  constructor() {
+  constructor(reset) {
+    if (reset) {
+      this.clean();
+      this.newGame();
+    } else {
+      this.newGame();
+    }
+  }
+
+  newGame() {
     this.word = getWordState() || this.generateWord();
     console.log("Generated word at constructor: ", this.word);
     this.generateNewBoard();
 
     countdown();
     currentPos = 0;
+
+    setGameStatus(true);
   }
 
   clean() {
@@ -151,9 +164,6 @@ export class Game {
     }`;
 
     scoreSpan.textContent = getScore().score();
-
-    // new Date() ?
-    this.clean();
 
     timeLeft.textContent = timer.textContent;
     endGameModal.style.visibility = "visible";
