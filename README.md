@@ -28,7 +28,7 @@ console.log(keydownEvent.key); // "Backspace" "Shift"
 **Checking submitted word**
 It seems the easier solution would be to have a single user input, and then comparing the string that way. However in my approach, I wanted to have it a similar interaction as the original game (primarily to test myself).
 
-_Problem #1:_ I had initially designed the logic to check if the letter was in the generated word as they typed, which would return true or false - which kind of defeated the purpose. It would also mean that I would lose the backspacing functionality and I'd end up looping... a lot. But it was easier, because I had the index always accessible inside the loop.
+I had initially designed the logic to check if the letter was in the generated word as they typed, which would return true or false - which kind of defeated the purpose. It would also mean that I would lose the backspacing functionality and I'd end up looping... a lot. But it was easier, because I had the index always accessible inside the loop.
 
 When I moved away from this approach, I found out why many people struggle on this part.
 
@@ -60,6 +60,9 @@ encodedSubmittedWord.forEach((value, index) => {
 });
 ```
 
-### Optimisations
+**localStorage**
+While I find localStorage straightforward and easy to use, I did find that I had a hard time choosing how to approach it. Previously, I had initially stored the entire DOM as a state, which worked in a couple of lines, but I quickly lost control of being dynamic. So I had to scrap that approach.
 
-There is no doubt that this is currently a result of many tests, iterations and revisions, but the one that I have yet to focus on is how to make the code more efficient and clean.
+### Future plans
+
+Because it's been built through classes, I want to be able to generate any form of game with ease. Future versions will include the ability to choose the word length, how many guesses you want, and theme of words and more.
