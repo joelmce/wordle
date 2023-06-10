@@ -1,5 +1,4 @@
 import { Game } from "./game.js";
-import { setGameStatus } from "./helpers.js";
 
 const wordleContainer = document.getElementById("wordle");
 

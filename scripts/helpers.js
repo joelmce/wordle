@@ -11,14 +11,19 @@ let guessedWords = [];
 /**
  * Thanks Faith for the help
  */
-export function countdown() {
+export function countdown(isNew) {
+  if (isNew) {
+    localStorage.removeItem("timer");
+  }
   let cachedSeconds = getStartTime() || 600;
-
-  const timeRemaining = 10;
 
   setInterval(function () {
     cachedSeconds--;
     setStartTime(cachedSeconds);
+
+    if (cachedSeconds <= 0) {
+      clearInterval(this);
+    }
   }, 1000);
 }
 
@@ -78,12 +83,4 @@ export function getRowState() {
  */
 export function getWordState() {
   return localStorage.getItem("word");
-}
-
-export function setGameStatus(status) {
-  localStorage.setItem("state", status);
-}
-
-export function getGameStatus() {
-  return localStorage.getItem("state");
 }

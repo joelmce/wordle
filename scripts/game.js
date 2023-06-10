@@ -4,11 +4,9 @@ import {
   getWordsListState,
   saveState,
   countdown,
-  setGameStatus,
-  getGameStatus,
 } from "./helpers.js";
 import { validWords, words } from "./wordList.js";
-import { setScore, getScore, getStartTime, setStartTime } from "./score.js";
+import { setScore, getScore } from "./score.js";
 
 let gameBoard = [];
 const wl = {
@@ -45,10 +43,8 @@ export class Game {
     console.log("Generated word at constructor: ", this.word);
     this.generateNewBoard();
 
-    countdown();
     currentPos = 0;
-
-    setGameStatus(true);
+    countdown();
   }
 
   clean() {
