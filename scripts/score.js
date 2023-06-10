@@ -6,6 +6,7 @@
  *         of externally from this file
  */
 
+const timerDiv = document.getElementById("timer");
 /**
  * Sets the current game scoreboard.
  * @param {Number} score
@@ -48,4 +49,7 @@ export function getStartTime() {
  */
 export function setStartTime(time) {
   localStorage.setItem("timer", JSON.stringify(time));
+  const minutes = Math.floor(time / 60);
+  const seconds = time - minutes * 60;
+  timerDiv.textContent = minutes + ":" + seconds;
 }

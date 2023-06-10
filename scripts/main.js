@@ -6,7 +6,7 @@ const playAgainBtn = document.getElementById("play-again");
 wordleContainer.innerHTML = "";
 let game = new Game();
 
-console.log("Version: 1.1.0");
+console.log("Version: 1.3.0");
 
 /**
  * Keypress event is depreciated, using keydown instead.

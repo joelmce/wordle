@@ -4,32 +4,22 @@
  *         file.
  */
 
-const timerDiv = document.getElementById("timer");
+import { getStartTime, setStartTime } from "./score.js";
 
 let guessedWords = [];
 
 /**
- * Inspired & resourced from Stackoverflow answer:
- * https://stackoverflow.com/a/58742956
- *
- * Mainly seeked assistance with the maths side of the equation,
- * rather than the logic.
- * @param {Date} timeRemaining a float or int will return whole number.
- * Must convert the @param timeRemaining to a new Date.
+ * Thanks Faith for the help
  */
-export function countdown(timeRemaining) {
-  let timer = new Date().getTime() + timeRemaining * 60 * 1000;
+export function countdown() {
+  let cachedSeconds = getStartTime() || 600;
 
-  const count = setInterval(function () {
-    let now = new Date().getTime();
+  const timeRemaining = 10;
 
-    let distance = timer - now;
-
-    let minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-    let seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-    timerDiv.textContent = minutes + ":" + seconds;
-  }, 1000); // Second decrement
+  setInterval(function () {
+    cachedSeconds--;
+    setStartTime(cachedSeconds);
+  }, 1000);
 }
 
 /**

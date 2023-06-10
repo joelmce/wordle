@@ -28,16 +28,13 @@ const timer = document.getElementById("timer");
 const scoreSpan = document.getElementById("score");
 const timeLeft = document.getElementById("timeLeft");
 
-// const alert = document.getElementById("alert");
-
 export class Game {
   constructor() {
     this.word = getWordState() || this.generateWord();
     console.log("Generated word at constructor: ", this.word);
     this.generateNewBoard();
-    const startTime = getStartTime() || 10;
 
-    countdown(startTime);
+    countdown();
     currentPos = 0;
   }
 
@@ -116,8 +113,7 @@ export class Game {
    * @param {*} submittedWord
    */
   validate(submittedWord, turnState) {
-    const tmpWord = this.word;
-    const encodedWord = [...tmpWord];
+    const encodedWord = [...this.word];
     const encodedSubmittedWord = [...submittedWord];
     if (this.word == submittedWord) this.endGame(wl.win, currentRow);
 
@@ -128,15 +124,12 @@ export class Game {
         if (encodedWord[i] == char) {
           gameBoard[turnState][i].classList.add("found");
         } else if (encodedWord.includes(char)) {
-          console.log(turnState, " ", i);
           gameBoard[turnState][i].style.backgroundColor = "orange"; // @todo make classlist add
         }
       });
       if (wordSubmitted != "") {
         saveState(this.word, turnState, wordSubmitted);
       }
-
-      setStartTime(parseFloat(timer.textContent));
       wordSubmitted = "";
       this.nextPosition();
     }
